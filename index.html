@@ -51,16 +51,31 @@
       const { useState } = React;
 
       const ReactApp = () => {
-        const animals = ["cane", "gatto", "cavallo"];
+        const [animals, setAnimals] = useState([]);
+        const animalsChoices = [
+          "Cane",
+          "Gatto",
+          "Pappagallo",
+          "Cavallo",
+          "Panda",
+        ];
+        const addAnimal = () => {
+          const animaleCasule =
+            animalsChoices[Math.floor(Math.random() * animalsChoices.length)];
+          setAnimals([...animals, animaleCasule]);
+        };
         return (
-          <details>
-            <summary>Animali</summary>
-            <ul>
-              {animals.map((animal) => (
-                <li>{animal}</li>
-              ))}
-            </ul>
-          </details>
+          <>
+            <button onClick={addAnimal}>Aggiungi animale</button>
+            <details>
+              <summary>Animali</summary>
+              <ul>
+                {animals.map((animal, index) => (
+                  <li key={index}>{animal}</li>
+                ))}
+              </ul>
+            </details>
+          </>
         );
       };
     </script>
