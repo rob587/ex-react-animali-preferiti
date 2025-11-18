@@ -46,12 +46,54 @@
       .lista-animali {
         width: 100%;
       }
+
+      .modal-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+      }
     </style>
     <script type="text/babel">
       const { useState } = React;
 
+      function Modal({
+        title,
+        content,
+        show = false,
+        onClose = () => {},
+        onConfirm = () => {},
+      }) {
+        return (
+          show &&
+          ReactDOM.createPortal(
+            <div className="modal-container">
+              <div className="modal">
+                <h2>{title}</h2>
+                {content}
+                <button onClick={onConfirm}>Conferma</button>
+                <button onClick={onClose}>Annulla</button>
+              </div>
+            </div>,
+            document.body
+          )
+        );
+      }
+
       const ReactApp = () => {
         const [animals, setAnimals] = useState([]);
+        const [showModal, setShowModal] = useState(false);
+        const [inputValue, setInputValue] = useState("");
         const animalsChoices = [
           "Cane",
           "Gatto",
@@ -59,10 +101,19 @@
           "Cavallo",
           "Panda",
         ];
+
+        const handleConfirm = () => {
+          setAnimals([...animals, inputValue]),
+            setShowModal(false),
+            setInputValue("");
+        };
+
+        const handleClose = () => {
+          setShowModal(false);
+        };
+
         const addAnimal = () => {
-          const animaleCasule =
-            animalsChoices[Math.floor(Math.random() * animalsChoices.length)];
-          setAnimals([...animals, animaleCasule]);
+          setShowModal(true);
         };
         return (
           <>
@@ -75,6 +126,20 @@
                 ))}
               </ul>
             </details>
+            <Modal
+              show={showModal}
+              title="Aggiungi un animale"
+              content={
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder="Nome animale"
+                />
+              }
+              onConfirm={handleConfirm}
+              onClose={handleClose}
+            />
           </>
         );
       };
